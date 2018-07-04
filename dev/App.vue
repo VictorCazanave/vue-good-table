@@ -26,6 +26,7 @@
 </template>
 
 <script>
+// https://github.com/vuejs/vue/issues/4332
 import CustomPagination from './custom-pagination';
 
 export default {

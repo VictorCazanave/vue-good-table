@@ -6,13 +6,31 @@
         href="javascript:undefined"
         class="footer__navigation__page-btn"
         :class="{ disabled: !prevIsPossible }"
-        @click.prevent.stop="previousPage"
-        tabindex="0">
+        @click.prevent.stop="firstPage">
+        <span>FIRST</span>
+      </a>
+    <a
+        href="javascript:undefined"
+        class="footer__navigation__page-btn"
+        :class="{ disabled: !prevIsPossible }"
+        @click.prevent.stop="previousPage">
         <span>PREVIOUS</span>
       </a>
+      <form @submit.prevent.stop="changePage">
+          <label for="page-number">PAGE</label>
+          <input type="number" name="page-number" id="page-number" v-model="pageNumber"><span>/{{totalPagesNumber}}</span>
+      </form>
       <a href="javascript:undefined" class="footer__navigation__page-btn"
-         :class="{ disabled: !nextIsPossible }" @click.prevent.stop="nextPage" tabindex="0">
+         :class="{ disabled: !nextIsPossible }" @click.prevent.stop="nextPage">
         <span>NEXT</span>
+      </a>
+      <a href="javascript:undefined" class="footer__navigation__page-btn"
+         :class="{ disabled: !nextIsPossible }" @click.prevent.stop="lastPage">
+        <span>LAST</span>
+      </a>
+    <a href="javascript:undefined" class="footer__navigation__page-btn"
+         @click.prevent.stop="refresh">
+        <span>REFRESH</span>
       </a>
     </div>
 
@@ -48,16 +66,21 @@ export default {
     perPageChanged: Function,
   },
 
-  data: () => ({
-    currentPage: 1,
-    currentPerPage: 5,
-    rowsPerPageOptions: [5, 10, 20],
-  }),
-
+  data() {
+      return {
+        currentPage: 1,
+        currentPerPage: 5,
+        rowsPerPageOptions: [5, 10, 20],
+        pageNumber: 1,
+    };
+  },
 
   computed: {
-    currentPerPageString() {
-      return this.currentPerPage === -1 ? 'All' : this.currentPerPage;
+    totalPagesNumber() {
+        const quotient =  Math.floor(this.total / this.currentPerPage);
+        const remainder = this.total % this.currentPerPage;
+
+        return remainder === 0 ? quotient : quotient + 1;
     },
 
     paginatedInfo() {
@@ -77,8 +100,7 @@ export default {
       return `DISPLAY ITEMS: ${first} - ${last}, TOTAL: ${this.total}`;
     },
     nextIsPossible() {
-      return this.currentPerPage === -1 ?
-        false : (this.total > this.currentPerPage * this.currentPage);
+      return this.currentPage < this.totalPagesNumber;
     },
     prevIsPossible() {
       return this.currentPage > 1;
@@ -86,15 +108,14 @@ export default {
   },
 
   methods: {
-    changePage(pageNumber) {
-      if (pageNumber > 0 && this.total > this.currentPerPage * pageNumber) {
-        this.currentPage = pageNumber;
+    changePage() {
+      if (this.pageNumber > 0 && this.pageNumber <= this.totalPagesNumber && this.pageNumber !== this.currentPage) {
+        this.currentPage = this.pageNumber;
         this.handlePageChanged();
       }
     },
 
     nextPage() {
-      if (this.currentPerPage === -1) return;
       if (this.nextIsPossible) {
         ++this.currentPage;
         this.handlePageChanged();
@@ -102,6 +123,20 @@ export default {
     },
 
     previousPage() {
+      if (this.currentPage > 1) {
+        --this.currentPage;
+        this.handlePageChanged();
+      }
+    },
+
+    lastPage() {
+      if (this.nextIsPossible) {
+        ++this.currentPage;
+        this.handlePageChanged();
+      }
+    },
+
+    firstPage() {
       if (this.currentPage > 1) {
         --this.currentPage;
         this.handlePageChanged();
@@ -118,10 +153,15 @@ export default {
       }
       this.perPageChanged({ currentPerPage: this.currentPerPage })
     },
+      refresh() {
+      console.log('REFRESH');
+      // Use vuex to refresh logs
+  },
 
   },
 
-  mounted() {
+
+  created() {
       this.handlePerPageChanged();
   },
 };
