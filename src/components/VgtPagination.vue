@@ -43,19 +43,19 @@ import cloneDeep from 'lodash.clonedeep';
 export default {
   name: 'VgtPagination',
   props: {
-    styleClass: { default: 'table table-bordered' },
-    total: { default: null },
-    perPage: {},
-    rtl: { default: false },
-    customRowsPerPageDropdown: { default() { return []; } },
-    paginateDropdownAllowAll: { default: true },
+      styleClass: { default: 'table table-bordered' },
+      total: { default: null },
+      perPage: {},
+      rtl: { default: false },
+      customRowsPerPageDropdown: { default() { return []; } },
+      paginateDropdownAllowAll: { default: true },
 
-    // text options
-    nextText: { default: 'Next' },
-    prevText: { default: 'Prev' },
-    rowsPerPageText: { default: 'Rows per page:' },
-    ofText: { default: 'of' },
-    allText: { default: 'All' },
+      // text options
+      nextText: { default: 'Next' },
+      prevText: { default: 'Prev' },
+      rowsPerPageText: { default: 'Rows per page:' },
+      ofText: { default: 'of' },
+      allText: { default: 'All' },
   },
 
   data: () => ({
@@ -189,5 +189,4 @@ export default {
 </script>
 
 <style lang="scss">
-
 </style>

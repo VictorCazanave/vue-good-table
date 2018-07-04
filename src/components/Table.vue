@@ -166,11 +166,12 @@
           </tbody>
         </table>
       </div>
-      <vgt-pagination
-        v-if="paginate && paginateOnBottom"
+      <slot 
+        name="pagination"
         ref="paginationBottom"
-        @page-changed="pageChanged"
-        @per-page-changed="perPageChanged"
+        v-if="paginate && paginateOnBottom"
+        :pageChanged="pageChanged"
+        :perPageChanged="perPageChanged"
         :perPage="perPage"
         :rtl="rtl"
         :total="totalRows || totalRowCount"
@@ -180,8 +181,22 @@
         :customRowsPerPageDropdown="customRowsPerPageDropdown"
         :paginateDropdownAllowAll="paginateDropdownAllowAll"
         :ofText="ofText"
-        :allText="allText"
+        :allText="allText">
+        <vgt-pagination
+          @page-changed="pageChanged"
+          @per-page-changed="perPageChanged"
+          :perPage="perPage"
+          :rtl="rtl"
+          :total="totalRows || totalRowCount"
+          :nextText="nextText"
+          :prevText="prevText"
+          :rowsPerPageText="rowsPerPageText"
+          :customRowsPerPageDropdown="customRowsPerPageDropdown"
+          :paginateDropdownAllowAll="paginateDropdownAllowAll"
+          :ofText="ofText"
+          :allText="allText"
         ></vgt-pagination>
+      </slot>
     </div>
   </div>
 </template>
@@ -1280,5 +1295,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../styles/style';
+@import "../styles/style";
 </style>

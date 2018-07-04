@@ -1,9 +1,4 @@
 <template>
-  <div>
-    <button @click="rows = [];">empty row</button>
-    <button @click="resetTable">reset Table</button>
-    <button @click="hideColumn">hide column</button>
-    <input type="text" v-model="searchTerm">
     <vue-good-table
       ref="my-table"
       @on-column-filter="onColumnFilter"
@@ -24,14 +19,14 @@
       :search-options="{
         enabled: false,
       }">
+      <template slot="pagination" slot-scope="{total, pageChanged, perPageChanged}">
+        <custom-pagination v-bind="{total, pageChanged, perPageChanged}"></custom-pagination>
+      </template>
     </vue-good-table>
-    <h3>Grouped Table</h3>
-    <grouped-table></grouped-table>
-  </div>
 </template>
 
 <script>
-import GroupedTable from './grouped-table';
+import CustomPagination from './custom-pagination';
 
 export default {
   name: 'test',
@@ -266,19 +261,19 @@ export default {
     //   });
   },
   components: {
-    'grouped-table': GroupedTable,
+    CustomPagination,
   },
 };
 </script>
 
 <style lang="css">
-  .row-style{
-    background-color: red;
-  }
-  *{
-    font-family: 'Open Sans';
-  }
-  /* .vgt-selection-info-row.info-custom{
+.row-style {
+  background-color: red;
+}
+* {
+  font-family: "Open Sans";
+}
+/* .vgt-selection-info-row.info-custom{
     background: red;
   } */
 </style>
