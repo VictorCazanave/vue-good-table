@@ -499,7 +499,7 @@ var VgtFilterRow = {
     })], 2) : _vm._e();
   },
   staticRenderFns: [],
-  _scopeId: 'data-v-2949d74f',
+  _scopeId: 'data-v-a837ada2',
   name: 'VgtFilterRow',
   props: ['lineNumbers', 'columns', 'typedColumns', 'globalSearchEnabled', 'selectable', 'mode'],
   watch: {
@@ -817,7 +817,7 @@ var VueGoodTable = {
       class: {
         'is-loading': _vm.isTableLoading
       }
-    }, [_vm.paginate && _vm.paginateOnTop ? _c('vgt-pagination', {
+    }, [_vm.paginate && _vm.paginateOnTop ? _vm._t("pagination-top", [_c('vgt-pagination', {
       ref: "paginationTop",
       attrs: {
         "perPage": _vm.perPage,
@@ -835,6 +835,10 @@ var VueGoodTable = {
         "page-changed": _vm.pageChanged,
         "per-page-changed": _vm.perPageChanged
       }
+    })], {
+      pageChanged: _vm.pageChanged,
+      perPageChanged: _vm.perPageChanged,
+      total: _vm.totalRows || _vm.totalRowCount
     }) : _vm._e(), _vm._v(" "), _c('vgt-global-search', {
       attrs: {
         "search-enabled": _vm.searchEnabled && _vm.externalSearchQuery == null,
@@ -1004,7 +1008,7 @@ var VueGoodTable = {
       }
     }, [_vm._t("emptystate", [_c('div', {
       staticClass: "vgt-center-align vgt-text-disabled"
-    }, [_vm._v(" No data for table ")])])], 2)])]) : _vm._e()], 2)]), _vm._v(" "), _vm.paginate && _vm.paginateOnBottom ? _c('vgt-pagination', {
+    }, [_vm._v(" No data for table ")])])], 2)])]) : _vm._e()], 2)]), _vm._v(" "), _vm.paginate && _vm.paginateOnBottom ? _vm._t("pagination-bottom", [_c('vgt-pagination', {
       ref: "paginationBottom",
       attrs: {
         "perPage": _vm.perPage,
@@ -1022,7 +1026,11 @@ var VueGoodTable = {
         "page-changed": _vm.pageChanged,
         "per-page-changed": _vm.perPageChanged
       }
-    }) : _vm._e()], 1)]);
+    })], {
+      pageChanged: _vm.pageChanged,
+      perPageChanged: _vm.perPageChanged,
+      total: _vm.totalRows || _vm.totalRowCount
+    }) : _vm._e()], 2)]);
   },
   staticRenderFns: [],
   name: 'vue-good-table',
