@@ -172,16 +172,7 @@
         v-if="paginate && paginateOnBottom"
         :pageChanged="pageChanged"
         :perPageChanged="perPageChanged"
-        :perPage="perPage"
-        :rtl="rtl"
-        :total="totalRows || totalRowCount"
-        :nextText="nextText"
-        :prevText="prevText"
-        :rowsPerPageText="rowsPerPageText"
-        :customRowsPerPageDropdown="customRowsPerPageDropdown"
-        :paginateDropdownAllowAll="paginateDropdownAllowAll"
-        :ofText="ofText"
-        :allText="allText">
+        :total="totalRows || totalRowCount">
         <vgt-pagination
           @page-changed="pageChanged"
           @per-page-changed="perPageChanged"
