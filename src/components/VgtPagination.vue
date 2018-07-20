@@ -9,12 +9,12 @@
         v-model="currentPerPage"
         @change="perPageChanged">
         <option
-          v-for="(option, idx) in getRowsPerPageDropdown()"
+          v-for="(option, idx) in rowsPerPageOptions"
           v-bind:key="'rows-dropdown-option-' + idx"
           :value="option">
           {{ option }}
         </option>
-        <option v-if="paginateDropdownAllowAll" value="-1">{{allText}}</option>
+        <option v-if="paginateDropdownAllowAll" :value="total">{{allText}}</option>
       </select>
     </div>
     <div class="footer__navigation vgt-pull-right">
@@ -40,6 +40,8 @@
 <script>
 import cloneDeep from 'lodash.clonedeep';
 
+const DEFAULT_ROWS_PER_PAGE_DROPDOWN = [10, 20, 30, 40, 50];
+
 export default {
   name: 'VgtPagination',
   props: {
@@ -62,7 +64,6 @@ export default {
     currentPage: 1,
     currentPerPage: 10,
     rowsPerPageOptions: [],
-    defaultRowsPerPageDropdown: [10, 20, 30, 40, 50],
   }),
 
   watch: {
@@ -78,33 +79,23 @@ export default {
         this.rowsPerPageOptions = this.customRowsPerPageDropdown;
       }
     },
-
   },
 
   computed: {
-    currentPerPageString() {
-      return this.currentPerPage === -1 ? 'All' : this.currentPerPage;
-    },
+    pagesCount() {
+			const quotient = Math.floor(this.total / this.currentPerPage);
+			const remainder = this.total % this.currentPerPage;
 
+			return remainder === 0 ? quotient : quotient + 1;
+		},
     paginatedInfo() {
-      if (this.currentPerPage === -1) {
-        return `1 - ${this.total} ${this.ofText} ${this.total}`;
-      }
-      let first = ((this.currentPage - 1) * this.currentPerPage) + 1 ?
-        ((this.currentPage - 1) * this.currentPerPage) + 1 : 1;
+      const first = ((this.currentPage - 1) * this.currentPerPage) + 1;
+      const last = Math.min(this.total, this.currentPage * this.currentPerPage);
 
-      if (first > this.total) {
-        // this probably happened as a result of filtering
-        first = 1;
-        this.currentPage = 1;
-      }
-
-      const last = Math.min(this.total, this.currentPerPage * this.currentPage);
-      return `${first} - ${last} ${this.ofText} ${this.total}`;
+      return `Display items: ${first}-${last},Total: ${this.total}`;
     },
     nextIsPossible() {
-      return this.currentPerPage === -1 ?
-        false : (this.total > this.currentPerPage * this.currentPage);
+      return this.currentPage < this.pagesCount;
     },
     prevIsPossible() {
       return this.currentPage > 1;
@@ -116,27 +107,26 @@ export default {
     //   return this.currentPerPage === option;
     // },
 
-    reset() {
+    // Not used
+    // reset() {},
 
-    },
-
-    changePage(pageNumber) {
-      if (pageNumber > 0 && this.total > this.currentPerPage * pageNumber) {
-        this.currentPage = pageNumber;
-        this.pageChanged();
-      }
-    },
+    // Not used
+    //changePage(pageNumber) {
+    // if (pageNumber > 0 && this.total > this.currentPerPage * pageNumber) {
+    //   this.currentPage = pageNumber;
+    //   this.pageChanged();
+    // }
+    //},
 
     nextPage() {
-      if (this.currentPerPage === -1) return;
       if (this.nextIsPossible) {
-        ++this.currentPage;
-        this.pageChanged();
-      }
+				++this.currentPage;
+				this.pageChanged();
+			}
     },
 
     previousPage() {
-      if (this.currentPage > 1) {
+      if (this.prevIsPossible) {
         --this.currentPage;
         this.pageChanged();
       }
@@ -146,19 +136,15 @@ export default {
       this.$emit('page-changed', { currentPage: this.currentPage });
     },
 
-    perPageChanged(event) {
-      if (event) {
-        this.currentPerPage = parseInt(event.target.value, 10);
-      }
+    perPageChanged() {
+      // Go to 1rst page
+      this.currentPage = 1;
       this.$emit('per-page-changed', { currentPerPage: this.currentPerPage });
     },
 
-    getRowsPerPageDropdown() {
-      return this.rowsPerPageOptions;
-    },
-
     handlePerPage() {
-      this.rowsPerPageOptions = cloneDeep(this.defaultRowsPerPageDropdown);
+      this.rowsPerPageOptions = cloneDeep(DEFAULT_ROWS_PER_PAGE_DROPDOWN);
+
       if (this.perPage) {
         this.currentPerPage = this.perPage;
         // if perPage doesn't already exist, we add it
@@ -168,7 +154,9 @@ export default {
             found = true;
           }
         }
-        if (!found && this.perPage !== -1) this.rowsPerPageOptions.push(this.perPage);
+        if (!found && this.perPage !== -1) {
+          this.rowsPerPageOptions.push(this.perPage);
+        }
       } else {
         // reset to default
         this.currentPerPage = 10;
