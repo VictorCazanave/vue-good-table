@@ -14,7 +14,7 @@
       :rows="rows"
       theme="black-rhino"
       :line-numbers="true"
-      :pagination-options="{ enabled: true, perPage: 5}"
+      :pagination-options="{ enabled: true, perPage: 5, position :'both'}"
       :select-options="{
         enabled: true,
         selectOnCheckboxOnly: false,
@@ -282,4 +282,3 @@ export default {
     background: red;
   } */
 </style>
-
