@@ -40,6 +40,8 @@
 <script>
 import cloneDeep from 'lodash.clonedeep';
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_PER_PAGE = 10;
 const DEFAULT_ROWS_PER_PAGE_DROPDOWN = [10, 20, 30, 40, 50];
 
 export default {
@@ -47,6 +49,7 @@ export default {
   props: {
     styleClass: { default: 'table table-bordered' },
     total: { default: null },
+    page: {},
     perPage: {},
     rtl: { default: false },
     customRowsPerPageDropdown: { default() { return []; } },
@@ -61,12 +64,17 @@ export default {
   },
 
   data: () => ({
-    currentPage: 1,
-    currentPerPage: 10,
+    currentPage: DEFAULT_PAGE,
+    currentPerPage: DEFAULT_PER_PAGE,
     rowsPerPageOptions: [],
   }),
 
   watch: {
+    page() {
+      this.handlePage();
+      this.pageChanged();
+    },
+
     perPage() {
       this.handlePerPage();
       this.perPageChanged();
@@ -146,20 +154,17 @@ export default {
       this.rowsPerPageOptions = cloneDeep(DEFAULT_ROWS_PER_PAGE_DROPDOWN);
 
       if (this.perPage) {
-        this.currentPerPage = this.perPage;
-        // if perPage doesn't already exist, we add it
+        // if perPage doesn't already exist, we don't use it
         let found = false;
         for (let i = 0; i < this.rowsPerPageOptions.length; i++) {
           if (this.rowsPerPageOptions[i] === this.perPage) {
             found = true;
           }
         }
-        if (!found && this.perPage !== -1) {
-          this.rowsPerPageOptions.push(this.perPage);
-        }
+        this.currentPerPage = found ? this.perPage : DEFAULT_PER_PAGE;
       } else {
         // reset to default
-        this.currentPerPage = 10;
+        this.currentPerPage = DEFAULT_PER_PAGE;
       }
 
       if (this.customRowsPerPageDropdown !== null
@@ -168,10 +173,17 @@ export default {
         this.rowsPerPageOptions = this.customRowsPerPageDropdown;
       }
     },
+
+    handlePage() {
+      if (this.page) {
+        this.currentPage = this.page;
+      }
+    },
   },
 
   mounted() {
     this.handlePerPage();
+    this.handlePage();
   },
 };
 </script>
